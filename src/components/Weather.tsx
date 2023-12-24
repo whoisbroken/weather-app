@@ -38,6 +38,32 @@ const Weather: React.FC = () => {
     fetchWeatherData();
   };
 
+  const getCurrentLocation = () => {
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const { latitude, longitude } = position.coords;
+
+          try {
+            const locationIQEndpoint = `https://us1.locationiq.com/v1/reverse.php?key=pk.044356cb5b706b9a01a631e949d2544b&lat=${latitude}&lon=${longitude}&format=json`;
+            const locationIQResponse = await axios.get(locationIQEndpoint);
+
+            setCity(locationIQResponse.data.address.city || '');
+          } catch (error) {
+            console.error('Error fetching location name:', error);
+          }
+        },
+        (error) => {
+          console.error('Error getting geolocation:', error);
+        }
+      );
+    }
+  };
+
+  useEffect(() => {
+    getCurrentLocation();
+  }, []);
+
   useEffect(() => {
     if (city) {
       fetchWeatherData();
