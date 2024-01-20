@@ -39,7 +39,7 @@ const Weather: React.FC = () => {
 
   const fetchCoordinates = async () => {
     try {
-      const locationIQEndpoint = `https://us1.locationiq.com/v1/search.php?key=pk.044356cb5b706b9a01a631e949d2544b&q=${city}&format=json`;
+      const locationIQEndpoint = `https://us1.locationiq.com/v1/search.php?key=${process.env.REACT_APP_WEATHER_API_KEY}&q=${city}&format=json`;
       const locationIQResponse = await axios.get(locationIQEndpoint);
 
       // Extract coordinates from the LocationIQ API response
@@ -57,8 +57,8 @@ const Weather: React.FC = () => {
       const coordinates = await fetchCoordinates();
 
       if (coordinates) {
-      const weatherEndpoint = `https://api.openweathermap.org/data/2.5/weather?lat=${coordinates.lat}&lon=${coordinates.lon}&units=${unit}&appid=4b14cb9940b8928413081f6e1f4c6f8e`;
-      const forecastEndpoint = `https://api.openweathermap.org/data/2.5/forecast?lat=${coordinates.lat}&lon=${coordinates.lon}&units=${unit}&appid=4b14cb9940b8928413081f6e1f4c6f8e`;
+      const weatherEndpoint = `https://api.openweathermap.org/data/2.5/weather?lat=${coordinates.lat}&lon=${coordinates.lon}&units=${unit}&appid=${process.env.REACT_APP_ID}`;
+      const forecastEndpoint = `https://api.openweathermap.org/data/2.5/forecast?lat=${coordinates.lat}&lon=${coordinates.lon}&units=${unit}&appid=${process.env.REACT_APP_ID}`;
 
       const [weatherResponse, forecastResponse] = await Promise.all([
         axios.get(weatherEndpoint),
@@ -116,7 +116,7 @@ const Weather: React.FC = () => {
           const { latitude, longitude } = position.coords;
 
           try {
-            const locationIQEndpoint = `https://us1.locationiq.com/v1/reverse.php?key=pk.044356cb5b706b9a01a631e949d2544b&lat=${latitude}&lon=${longitude}&format=json`;
+            const locationIQEndpoint = `https://us1.locationiq.com/v1/reverse.php?key=${process.env.REACT_APP_WEATHER_API_KEY}&lat=${latitude}&lon=${longitude}&format=json`;
             const locationIQResponse = await axios.get(locationIQEndpoint);
 
             setCity(locationIQResponse.data.address.city || '');
