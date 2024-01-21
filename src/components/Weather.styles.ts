@@ -46,7 +46,7 @@ export const ToggleButton = styled.input`
   transition: background-color ease 0.3s;
 
   &:before {
-    content: "Cel Fah";
+    content: "Fah Cel";
     display: block;
     position: absolute;
     z-index: 2;
@@ -105,7 +105,6 @@ export const Button = styled.button`
 
 export const MainContainer = styled.div`
   max-width: 1000px;
-  height: 700px;
   margin: auto;
   padding: 0 1rem;
   position: relative;
@@ -122,7 +121,7 @@ export const Text = styled.p`
 
 export const RotatedText = styled.p`
   position: relative;
-  right: -90%;
+  right: -97%;
   transform-origin: 0 0;
   transform: rotate(269deg);
 `;
@@ -134,7 +133,6 @@ export const SecondaryContainer = styled.div`
   flex-wrap: wrap;
   width: 100%;
   margin: 1rem auto;
-  padding: 1rem;
   border-radius: 12px;
   background-color: rgba(255, 255, 255, 0.2);
 `;

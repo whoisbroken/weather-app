@@ -22,8 +22,7 @@ interface WeatherData {
 
 interface ForecastData {
   date: string;
-  highTemperature: number;
-  lowTemperature: number;
+  temp: number;
   condition: string;
 }
 
@@ -37,8 +36,7 @@ interface forecastDayDescription {
 interface forecastDay {
   dt_txt: string;
   main: {
-    temp_max: number;
-    temp_min: number;
+    temp: number;
   };
   weather: forecastDayDescription[];
 }
@@ -89,12 +87,11 @@ const Weather: React.FC = () => {
         const formattedForecastData = forecastResponse.data.list.reduce(
           (acc: ForecastData[], forecastDayData: forecastDay) => {
             const date = forecastDayData.dt_txt.split(" ")[0];
-            const highTemperature = forecastDayData.main.temp_max;
-            const lowTemperature = forecastDayData.main.temp_min;
+            const temp = forecastDayData.main.temp;
             const condition = forecastDayData.weather[0].description;
 
             if (!acc.some((day) => day.date === date)) {
-              acc.push({ date, highTemperature, lowTemperature, condition });
+              acc.push({ date, temp, condition });
             }
 
             return acc;
@@ -169,7 +166,7 @@ const Weather: React.FC = () => {
 
       {weatherData && (
         <MainContainer>
-          <Text>{city}</Text>
+          <h2>{city}</h2>
           <Text>
             {weatherData.temperature}&deg;{unit === "metric" ? "C" : "F"}
           </Text>
@@ -193,25 +190,29 @@ const Weather: React.FC = () => {
               <p>Wind Speed</p>
             </div>
           </SecondaryContainer>
-        </MainContainer>
-      )}
 
-      {forecastData.length > 0 && (
-        <div>
           <h2>5-Day Forecast</h2>
-          {forecastData.map((day) => (
-            <div key={day.date}>
-              <p>Date: {day.date}</p>
-              <p>
-                High: {day.highTemperature}&deg;{unit === "metric" ? "C" : "F"}
-              </p>
-              <p>
-                Low: {day.lowTemperature}&deg;{unit === "metric" ? "C" : "F"}
-              </p>
-              <p>Condition: {day.condition}</p>
-            </div>
-          ))}
-        </div>
+          {forecastData.length > 0 && (
+            <SecondaryContainer>
+              {forecastData.map((day) => (
+                <div key={day.date}>
+                  <div>
+                    <Text>{day.date}</Text>
+                  </div>
+                  <div>
+                    <Text>
+                      {day.temp}&deg;
+                      {unit === "metric" ? "C" : "F"}
+                    </Text>
+                  </div>
+                  <div>
+                    <Text>{day.condition}</Text>
+                  </div>
+                </div>
+              ))}
+            </SecondaryContainer>
+          )}
+        </MainContainer>
       )}
     </Wrapper>
   );
