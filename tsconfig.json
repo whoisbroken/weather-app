@@ -13,6 +13,6 @@
       "isolatedModules": true,
       "noEmit": true
     },
-    "include": ["src/**/*.tsx", "src/**/*.ts"]
+    "include": ["src/**/*.tsx", "src/**/*.ts", "src", "src/declaration.d.ts",]
   }
   

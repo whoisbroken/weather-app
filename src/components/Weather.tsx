@@ -1,11 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import {
+  FormContainer,
+  SearchInput,
+  Wrapper,
+  Text,
+  RotatedText,
+  MainContainer,
+  SecondaryContainer,
+  Button,
+  ToggleButton,
+} from "./Weather.styles";
 
 interface WeatherData {
   temperature: number;
   condition: string;
   windSpeed: number;
   humidity: number;
+  feels_like: number;
 }
 
 interface ForecastData {
@@ -16,25 +28,25 @@ interface ForecastData {
 }
 
 interface forecastDayDescription {
-  description: string
-  icon: string
-  id: number
-  main: string
+  description: string;
+  icon: string;
+  id: number;
+  main: string;
 }
 
 interface forecastDay {
   dt_txt: string;
   main: {
-    temp_max: number,
-    temp_min: number
+    temp_max: number;
+    temp_min: number;
   };
   weather: forecastDayDescription[];
 }
 
 const Weather: React.FC = () => {
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
-  const [city, setCity] = useState<string>('');
-  const [unit, setUnit] = useState<'metric' | 'imperial'>('metric');
+  const [city, setCity] = useState<string>("");
+  const [unit, setUnit] = useState<"metric" | "imperial">("metric");
   const [forecastData, setForecastData] = useState<ForecastData[]>([]);
 
   const fetchCoordinates = async () => {
@@ -47,7 +59,7 @@ const Weather: React.FC = () => {
 
       return { lat, lon };
     } catch (error) {
-      console.error('Error fetching coordinates:', error);
+      console.error("Error fetching coordinates:", error);
       return null;
     }
   };
@@ -57,42 +69,43 @@ const Weather: React.FC = () => {
       const coordinates = await fetchCoordinates();
 
       if (coordinates) {
-      const weatherEndpoint = `https://api.openweathermap.org/data/2.5/weather?lat=${coordinates.lat}&lon=${coordinates.lon}&units=${unit}&appid=${process.env.REACT_APP_ID}`;
-      const forecastEndpoint = `https://api.openweathermap.org/data/2.5/forecast?lat=${coordinates.lat}&lon=${coordinates.lon}&units=${unit}&appid=${process.env.REACT_APP_ID}`;
+        const weatherEndpoint = `https://api.openweathermap.org/data/2.5/weather?lat=${coordinates.lat}&lon=${coordinates.lon}&units=${unit}&appid=${process.env.REACT_APP_ID}`;
+        const forecastEndpoint = `https://api.openweathermap.org/data/2.5/forecast?lat=${coordinates.lat}&lon=${coordinates.lon}&units=${unit}&appid=${process.env.REACT_APP_ID}`;
 
-      const [weatherResponse, forecastResponse] = await Promise.all([
-        axios.get(weatherEndpoint),
-        axios.get(forecastEndpoint),
-      ]);
+        const [weatherResponse, forecastResponse] = await Promise.all([
+          axios.get(weatherEndpoint),
+          axios.get(forecastEndpoint),
+        ]);
 
-      const { main, weather, wind } = weatherResponse.data;
-      setWeatherData({
-        temperature: main.temp,
-        condition: weather[0].description,
-        windSpeed: wind.speed,
-        humidity: main.humidity,
-      });
+        const { main, weather, wind } = weatherResponse.data;
+        setWeatherData({
+          temperature: main.temp,
+          condition: weather[0].description,
+          windSpeed: wind.speed,
+          humidity: main.humidity,
+          feels_like: main.feels_like,
+        });
 
-      const formattedForecastData = forecastResponse.data.list.reduce(
-        (acc: ForecastData[], forecastDayData: forecastDay) => {
-          const date = forecastDayData.dt_txt.split(' ')[0];
-          const highTemperature = forecastDayData.main.temp_max;
-          const lowTemperature = forecastDayData.main.temp_min;
-          const condition = forecastDayData.weather[0].description;
+        const formattedForecastData = forecastResponse.data.list.reduce(
+          (acc: ForecastData[], forecastDayData: forecastDay) => {
+            const date = forecastDayData.dt_txt.split(" ")[0];
+            const highTemperature = forecastDayData.main.temp_max;
+            const lowTemperature = forecastDayData.main.temp_min;
+            const condition = forecastDayData.weather[0].description;
 
-          if (!acc.some((day) => day.date === date)) {
-            acc.push({ date, highTemperature, lowTemperature, condition });
-          }
+            if (!acc.some((day) => day.date === date)) {
+              acc.push({ date, highTemperature, lowTemperature, condition });
+            }
 
-          return acc;
-        },
-        []
-      );
+            return acc;
+          },
+          []
+        );
 
-      setForecastData(formattedForecastData);
+        setForecastData(formattedForecastData);
       }
     } catch (error) {
-      console.error('Error fetching weather data:', error);
+      console.error("Error fetching weather data:", error);
     }
   };
 
@@ -101,7 +114,7 @@ const Weather: React.FC = () => {
   };
 
   const toggleUnit = () => {
-    setUnit((prevUnit) => (prevUnit === 'metric' ? 'imperial' : 'metric'));
+    setUnit((prevUnit) => (prevUnit === "metric" ? "imperial" : "metric"));
   };
 
   const handleSubmit = (event: React.FormEvent) => {
@@ -110,7 +123,7 @@ const Weather: React.FC = () => {
   };
 
   const getCurrentLocation = () => {
-    if ('geolocation' in navigator) {
+    if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           const { latitude, longitude } = position.coords;
@@ -119,13 +132,13 @@ const Weather: React.FC = () => {
             const locationIQEndpoint = `https://us1.locationiq.com/v1/reverse.php?key=${process.env.REACT_APP_WEATHER_API_KEY}&lat=${latitude}&lon=${longitude}&format=json`;
             const locationIQResponse = await axios.get(locationIQEndpoint);
 
-            setCity(locationIQResponse.data.address.city || '');
+            setCity(locationIQResponse.data.address.city || "");
           } catch (error) {
-            console.error('Error fetching location name:', error);
+            console.error("Error fetching location name:", error);
           }
         },
         (error) => {
-          console.error('Error getting geolocation:', error);
+          console.error("Error getting geolocation:", error);
         }
       );
     }
@@ -142,27 +155,45 @@ const Weather: React.FC = () => {
   }, [city, unit]);
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Enter City:
-          <input type="text" value={city} onChange={handleInputChange} />
-        </label>
-        <button type="submit">Search</button>
-      </form>
-
-      <button onClick={toggleUnit}>
-        {unit === 'metric' ? 'Switch to Fahrenheit' : 'Switch to Celsius'}
-      </button>
+    <Wrapper>
+      <FormContainer onSubmit={handleSubmit}>
+        <SearchInput
+          type="text"
+          value={city}
+          onChange={handleInputChange}
+          placeholder="Enter Location"
+        />
+        <Button type="submit">Search</Button>
+        <ToggleButton onClick={toggleUnit} type="checkbox" />
+      </FormContainer>
 
       {weatherData && (
-        <div>
-          <h2>Weather in {city}</h2>
-          <p>Temperature: {weatherData.temperature}&deg;{unit === 'metric' ? 'C' : 'F'}</p>
-          <p>Condition: {weatherData.condition}</p>
-          <p>Wind Speed: {weatherData.windSpeed} {unit === 'metric' ? 'meter/sec' : 'miles/hour'}</p>
-          <p>Humidity: {weatherData.humidity}%</p>
-        </div>
+        <MainContainer>
+          <Text>{city}</Text>
+          <Text>
+            {weatherData.temperature}&deg;{unit === "metric" ? "C" : "F"}
+          </Text>
+          <RotatedText>{weatherData.condition}</RotatedText>
+          <SecondaryContainer>
+            <div>
+              <Text>
+                {weatherData.feels_like}&deg;{unit === "metric" ? "C" : "F"}
+              </Text>
+              <p>Feels Like</p>
+            </div>
+            <div>
+              <Text>{weatherData.humidity}%</Text>
+              <p>Humidity</p>
+            </div>
+            <div>
+              <Text>
+                {weatherData.windSpeed}{" "}
+                {unit === "metric" ? "meter/sec" : "miles/hour"}
+              </Text>
+              <p>Wind Speed</p>
+            </div>
+          </SecondaryContainer>
+        </MainContainer>
       )}
 
       {forecastData.length > 0 && (
@@ -171,14 +202,18 @@ const Weather: React.FC = () => {
           {forecastData.map((day) => (
             <div key={day.date}>
               <p>Date: {day.date}</p>
-              <p>High: {day.highTemperature}&deg;{unit === 'metric' ? 'C' : 'F'}</p>
-              <p>Low: {day.lowTemperature}&deg;{unit === 'metric' ? 'C' : 'F'}</p>
+              <p>
+                High: {day.highTemperature}&deg;{unit === "metric" ? "C" : "F"}
+              </p>
+              <p>
+                Low: {day.lowTemperature}&deg;{unit === "metric" ? "C" : "F"}
+              </p>
               <p>Condition: {day.condition}</p>
             </div>
           ))}
         </div>
       )}
-    </div>
+    </Wrapper>
   );
 };
 
