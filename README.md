@@ -1,3 +1,8 @@
+# Weather App
+It's a pet project.
+
+You can see it live at https://whoisbroken.github.io/weather-app/
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

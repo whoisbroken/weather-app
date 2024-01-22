@@ -11,35 +11,7 @@ import {
   Button,
   ToggleButton,
 } from "./Weather.styles";
-
-interface WeatherData {
-  temperature: number;
-  condition: string;
-  windSpeed: number;
-  humidity: number;
-  feels_like: number;
-}
-
-interface ForecastData {
-  date: string;
-  temp: number;
-  condition: string;
-}
-
-interface forecastDayDescription {
-  description: string;
-  icon: string;
-  id: number;
-  main: string;
-}
-
-interface forecastDay {
-  dt_txt: string;
-  main: {
-    temp: number;
-  };
-  weather: forecastDayDescription[];
-}
+import { ForecastData, WeatherData, forecastDay } from "../types/Weather.types";
 
 const Weather: React.FC = () => {
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
