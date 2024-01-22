@@ -133,7 +133,7 @@ const Weather: React.FC = () => {
           placeholder="Enter Location"
         />
         <Button type="submit">Search</Button>
-        <ToggleButton onClick={toggleUnit} type="checkbox" />
+        <ToggleButton onClick={toggleUnit} type="checkbox" aria-label="Toggle Unit" />
       </FormContainer>
 
       {weatherData && (
